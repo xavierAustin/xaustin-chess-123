@@ -1,6 +1,7 @@
 #pragma once
 #include "Game.h"
 #include "ChessSquare.h"
+#include <list>
 
 const int pieceSize = 64;
 
@@ -43,15 +44,21 @@ public:
     bool        gameHasAI() override { return true; }
     void        QuickPlacePeice(int x, int y, ChessPiece type, int color);
     bool        bitFromToHelper(int sY, int sX, int type, BitHolder& dst);
+    void        generateMoveList();
 private:
     Bit *       PieceForPlayer(const int playerNumber, ChessPiece piece);
     const char  bitToPieceNotation(int row, int column) const;
 
-    ChessSquare      _grid[8][8];
+    ChessSquare _grid[8][8];
 
+    //0b111000000000 src x of possible move
+    //0b000111000000 src y of possible move
+    //0b000000111000 dst x of possible move
+    //0b000000000111 dst y of possible move
+    std::list<int>  _moveList = {};
     //0b1100 Black Castle Possible (Both Ways)
     //0b1010 Queenside Castle Possible (Both Colors)
-    char _castleRights = 0b1111;
-    char _enpassant = -1;
+    char        _castleRights = 0b1111;
+    char        _enpassant = -1;
 };
 

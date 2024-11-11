@@ -18,6 +18,8 @@ namespace ClassGame {
         {
             game = new Chess();
             game->setUpBoard();
+            //for debugging and assignment; pretty slow; remove/rework
+            game->generateMoveList();
         }
 
         //
@@ -67,5 +69,7 @@ namespace ClassGame {
                 gameOver = true;
                 gameWinner = -1;
             }
+            //for debugging and assignment; pretty slow; remove/rework
+            game->generateMoveList();
         }
 }

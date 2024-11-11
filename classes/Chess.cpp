@@ -3,6 +3,10 @@
 const int AI_PLAYER = 1;
 const int HUMAN_PLAYER = -1;
 
+bool forceTrueFunc(const int& a){
+    return true;
+}
+
 Chess::Chess()
 {
 }
@@ -216,6 +220,25 @@ void Chess::bitMovedFromTo(Bit &bit, BitHolder &src, BitHolder &dst)
         break;
     }
     endTurn();
+}
+
+void Chess::generateMoveList()
+{
+    //clear list
+    _moveList.remove_if(forceTrueFunc);
+    //find piece to move
+    for (int x = 0; x < 8; x ++)
+    for (int y = 0; y < 8; y ++){
+        if (_grid[y][x].bit() == nullptr)
+            continue;
+        if (!canBitMoveFrom(*_grid[y][x].bit(),_grid[y][x]))
+            continue;
+        //try to move piece
+        for (int dstX = 0; dstX < 8; dstX ++)
+        for (int dstY = 0; dstY < 8; dstY ++)
+            if (canBitMoveFromTo(*_grid[y][x].bit(),_grid[y][x],_grid[dstY][dstX]))
+                _moveList.push_back(y<<9 | x<<6 | dstY<<3 | dstX);
+    }
 }
 
 //
