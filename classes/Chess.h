@@ -41,10 +41,17 @@ public:
 
 	void        updateAI() override;
     bool        gameHasAI() override { return true; }
+    void        QuickPlacePeice(int x, int y, ChessPiece type, int color);
+    bool        bitFromToHelper(int sY, int sX, int type, BitHolder& dst);
 private:
     Bit *       PieceForPlayer(const int playerNumber, ChessPiece piece);
     const char  bitToPieceNotation(int row, int column) const;
 
     ChessSquare      _grid[8][8];
+
+    //0b1100 Black Castle Possible (Both Ways)
+    //0b1010 Queenside Castle Possible (Both Colors)
+    char _castleRights = 0b1111;
+    char _enpassant = -1;
 };
 

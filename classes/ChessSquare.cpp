@@ -14,6 +14,11 @@ void ChessSquare::initHolder(const ImVec2 &position, const char *spriteName, con
 
 bool ChessSquare::canDropBitAtPoint(Bit *newbit, const ImVec2 &point)
 {
+    //weird redundancy removed seemingly without consiquence
+    //its an interesting idea to think to use tags to encode color
+    //but bits already encode who owns them
+    return true;
+    /*
     if (bit() == nullptr)
     {
         return true;
@@ -26,10 +31,18 @@ bool ChessSquare::canDropBitAtPoint(Bit *newbit, const ImVec2 &point)
         return true;
     }
     return false;
+    */
 }
 
 bool ChessSquare::dropBitAtPoint(Bit *newbit, const ImVec2 &point)
 {
+    //second verse same as the first
+    //bits do their own garbage collection so this should be fine
+    setBit(newbit);
+    newbit->setParent(this);
+    newbit->moveTo(getPosition());
+    return true;
+    /*
     if (bit() == nullptr)
     {
         setBit(newbit);
@@ -46,6 +59,7 @@ bool ChessSquare::dropBitAtPoint(Bit *newbit, const ImVec2 &point)
         return true;
     }
     return false;
+    */
 }
 
 void ChessSquare::setMoveHighlighted(bool highlighted)

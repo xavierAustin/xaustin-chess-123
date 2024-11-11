@@ -49,33 +49,173 @@ void Chess::setUpBoard()
             _grid[y][x].setNotation(piece);
         }
     }
-    Bit* bit = PieceForPlayer(0, King);
-    bit->setPosition(_grid[4][4].getPosition());
-    bit->setParent(&_grid[4][4]);
-    bit->setGameTag(King);
-    _grid[0][0].setBit(bit);
+    //debug
+    //QuickPlacePeice(4,4,King,0);
+    //QuickPlacePeice(4,4,Queen,0);
+    //QuickPlacePeice(4,4,Rook,0);
+    //QuickPlacePeice(4,4,Knight,0);
+    //QuickPlacePeice(4,4,Bishop,0);
+    //QuickPlacePeice(4,4,Pawn,0);
+    //QuickPlacePeice(4,1,Pawn,0);
+    //QuickPlacePeice(3,5,Pawn,1);
+    //QuickPlacePeice(5,5,Pawn,1);
+    //_enpassant = 5;
+    //QuickPlacePeice(3,4,Pawn,1);
+    //QuickPlacePeice(5,4,Pawn,1);
+    //return;
+    // set up pawns for both sides
+    for (int c = 0; c < 2; c++)
+        for (int x = 0; x < _gameOptions.rowX; x++) 
+            QuickPlacePeice(x,1+5*c,Pawn,c);
+    // set up other peices
+    ChessPiece temp[] = {Rook,Knight,Bishop,Queen,King,Bishop,Knight,Rook};
+    for (int c = 0; c < 2; c++)
+        for (int x = 0; x < _gameOptions.rowX; x++) 
+            QuickPlacePeice(x,0+7*c,temp[x],c);
 }
 
-//
-// about the only thing we need to actually fill out for tic-tac-toe
-//
+void Chess::QuickPlacePeice(int x, int y, ChessPiece type, int color){
+    Bit* bit = PieceForPlayer(color, type);
+    bit->setPosition(_grid[y][x].getPosition());
+    bit->setParent(&_grid[y][x]);
+    bit->setGameTag(type);
+
+    _grid[y][x].setBit(bit);
+}
+
 bool Chess::actionForEmptyHolder(BitHolder &holder)
 {
     return false;
 }
 
+//I'd personally just use canBitMoveFromTo but this is probably better for organisation
 bool Chess::canBitMoveFrom(Bit &bit, BitHolder &src)
 {
-    return true;
+    if (bit.getOwner() == getCurrentPlayer())
+        return true;
+    else
+        return false;
 }
 
+//no bitboards? ;:(
 bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
 {
-    return true;
+    //general colision check
+    int capture = 0;
+    if (!dst.empty()){
+        if (dst.bit()->getOwner() == getCurrentPlayer())
+            return false;
+        capture = 1;
+    }
+    //turn number to color
+    int c = getCurrentTurnNo()%2;
+    //find info on current peice
+    int sX = 0;
+    int sY = 0;
+    for (int x = 0; x < 8; x ++)
+        for (int y = 0; y < 8; y ++)
+            if (&_grid[y][x] == &src){
+                sX = x;
+                sY = y;
+            }
+    int type = bit.gameTag();
+    
+    //Pawn movement
+    if (type == Pawn){
+        //normal
+        if (&dst == &_grid[sY+1-c*2][sX])
+            return true;
+        //double
+        if (&dst == &_grid[sY+2-c*4][sX])
+            return sY == 6 || sY == 1;
+        //capture
+        for (int i = -1; i < 2; i += 2)
+            if (&dst == &_grid[sY+1-c*2][sX+i])
+                return capture || _enpassant == sX+i;
+    //Knight movement
+    }else if (type == Knight){
+        for (int x = -2; x < 3; x ++){
+            if (sX+x < 0 || sX+x > 7 || x == 0)
+                continue;
+            for (int i = -1; i < 2; i += 2){
+                int y = (3-abs(x))*i;
+                if (sY+y < 0 || sY+y > 7)
+                    continue;
+                if (&dst == &_grid[sY+y][sX+x])
+                    return true;
+            }
+        }
+    //King, Queen, Rook, and Bishop Movement
+    }else
+        if (bitFromToHelper(sX,sY,type,dst))
+            return true;
+    //Castling
+    if (sX != 4 || type != King)
+        return false;
+    if ((&dst == &_grid[sY][sX+2] && _castleRights & 0b0001<<2*c && _grid[sY][sX+1].empty()) ||
+        (&dst == &_grid[sY][sX-2] && _castleRights & 0b0010<<2*c && _grid[sY][sX-1].empty()))
+        return true;
+    return false;
 }
 
-void Chess::bitMovedFromTo(Bit &bit, BitHolder &src, BitHolder &dst) {
+bool Chess::bitFromToHelper(int sX, int sY, int type, BitHolder& dst){
+    for (int x = -1; x < 2; x ++){
+        for (int y = -1; y < 2; y ++){
+            if ((!y && !x) || (type == Rook && x && y) || (type == Bishop && !(x && y)))
+                continue;
+            int i = 1;
+            while (sY+y*i < 8 && sY+y*i > -1 && sX+x*i < 8 && sX+x*i > -1){
+                if (&dst == &_grid[sY+y*i][sX+x*i])
+                    return true;
+                if ((!_grid[sY+y*i][sX+x*i].empty()) || type == King)
+                    break;
+                i ++;
+            }
+        }
+    }
+    return false;
+}
 
+void Chess::bitMovedFromTo(Bit &bit, BitHolder &src, BitHolder &dst) 
+{
+    bool c = getCurrentTurnNo()%2;
+    int type = bit.gameTag();
+    int sX = 0;
+    int sY = 0;
+    for (int x = 0; x < 8; x ++)
+        for (int y = 0; y < 8; y ++)
+            if (&_grid[y][x] == &src){
+                sX = x;
+                sY = y;
+            }
+    switch (type){
+        case King:
+            _castleRights &= 0b1100 >> 2*c;
+            for (int i = -1; i < 2; i += 2)
+                if ((&_grid[sY][4+i*2] == &dst)){
+                    QuickPlacePeice(4+i,sY,Rook,c);
+                    _grid[sY][7*(i==1)].setBit(nullptr);
+                }
+            _enpassant = -1;
+        break;
+        case Rook:
+            _castleRights &= (0b0001 << (2*c + (sX==0))) ^ 0b1111;
+            _enpassant = -1;
+        break;
+        case Pawn:
+            for (int i = -1; i < 2; i += 2)
+                if (sX+i == _enpassant && sY == 4 - c)
+                    _grid[sY][sX+i].setBit(nullptr);
+            if (sY == (1 + 5*c) && &dst == &_grid[(3 + c)][sX])
+                _enpassant = sX;
+            else
+                _enpassant = -1;
+        break;
+        default:
+            _enpassant = -1;
+        break;
+    }
+    endTurn();
 }
 
 //

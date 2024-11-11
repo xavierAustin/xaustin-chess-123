@@ -1,5 +1,9 @@
 # Chess AI Implementation Project
 
+![Chess King](https://raw.githubusercontent.com/zaphodgjd/class-chess-123/main/chess/w_king.png)
+
+So you don't have to scroll :)
+![Chess Board](https://raw.githubusercontent.com/zaphodgjd/class-chess-123/main/chess/w_king.png)
 ![Chess Board](https://raw.githubusercontent.com/zaphodgjd/class-chess-123/main/chess/w_king.png)
 
 ## 🎯 Project Overview
@@ -124,8 +128,8 @@ Students are encouraged to:
 This project is licensed under the MIT License.
 
 ## 👥 Contributors
-- [Your Name] - Initial work
-- [Student Names] - Implementation and testing
+- [Xavier Austin] - Modifications made to Chess.cpp Chess.h and ChessSquare.cpp to allow for standard peice movement
+- [N/a] - Implementation and testing
 
 ## 🙏 Acknowledgments
 - Chess piece sprites from [Wikipedia](https://en.wikipedia.org/wiki/Chess_piece)
