@@ -1,6 +1,7 @@
 #pragma once
 #include "Game.h"
 #include "ChessSquare.h"
+
 #include <list>
 
 const int pieceSize = 64;
@@ -43,8 +44,9 @@ public:
 	void        updateAI() override;
     bool        gameHasAI() override { return true; }
     void        QuickPlacePeice(int x, int y, ChessPiece type, int color);
-    bool        bitFromToHelper(int sY, int sX, int type, BitHolder& dst);
+    bool        bitFromToHelper(int sX, int sY, int type, BitHolder& dst);
     void        generateMoveList();
+    bool        getPosAttacked(int pX, int pY);
 private:
     Bit *       PieceForPlayer(const int playerNumber, ChessPiece piece);
     const char  bitToPieceNotation(int row, int column) const;

@@ -128,10 +128,10 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
     if (type == Pawn){
         //normal
         if (&dst == &_grid[sY+1-c*2][sX])
-            return true;
+            return dst.empty();
         //double
         if (&dst == &_grid[sY+2-c*4][sX])
-            return sY == 6 || sY == 1;
+            return (sY == 6 || sY == 1) && dst.empty();
         //capture
         for (int i = -1; i < 2; i += 2)
             if (&dst == &_grid[sY+1-c*2][sX+i])
@@ -330,4 +330,3 @@ void Chess::setStateString(const std::string &s)
 void Chess::updateAI() 
 {
 }
-
