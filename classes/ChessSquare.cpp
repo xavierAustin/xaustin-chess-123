@@ -7,18 +7,17 @@ void ChessSquare::initHolder(const ImVec2 &position, const char *spriteName, con
     _column = column;
     _row = row;
     int odd = (column + row) % 2;
-    ImVec4 color = odd ? ImVec4(0.93, 0.93, 0.84, 1.0) : ImVec4(0.48, 0.58, 0.36, 1.0);
+    ImVec4 color = odd ? ImVec4(1, 1, 1, 1.0) : ImVec4(0.96, 0.83, 0.99, 1.0);
+    //ImVec4 color = odd ? ImVec4(0.31, 0.36, 0.49, 1.0) : ImVec4(0.25, 0.21, 0.43, 1.0);
     BitHolder::initHolder(position, color, spriteName);
     setSize(pieceSize, pieceSize);
 }
 
 bool ChessSquare::canDropBitAtPoint(Bit *newbit, const ImVec2 &point)
 {
-    //weird redundancy removed seemingly without consiquence
-    //its an interesting idea to think to use tags to encode color
-    //but bits already encode who owns them
-    return true;
-    /*
+    //see next
+    //return true;
+    
     if (bit() == nullptr)
     {
         return true;
@@ -31,18 +30,17 @@ bool ChessSquare::canDropBitAtPoint(Bit *newbit, const ImVec2 &point)
         return true;
     }
     return false;
-    */
 }
 
 bool ChessSquare::dropBitAtPoint(Bit *newbit, const ImVec2 &point)
 {
-    //second verse same as the first
-    //bits do their own garbage collection so this should be fine
+    //changed my mind; I mean it's still very odd but idk
+    /*
     setBit(newbit);
     newbit->setParent(this);
     newbit->moveTo(getPosition());
     return true;
-    /*
+    */
     if (bit() == nullptr)
     {
         setBit(newbit);
@@ -59,16 +57,12 @@ bool ChessSquare::dropBitAtPoint(Bit *newbit, const ImVec2 &point)
         return true;
     }
     return false;
-    */
 }
 
 void ChessSquare::setMoveHighlighted(bool highlighted)
 {
     int odd = (_column + _row) % 2;
-    _color = odd ? ImVec4(0.93, 0.93, 0.84, 1.0) : ImVec4(0.48, 0.58, 0.36, 1.0);
+    _color = odd ? ImVec4(1, 1, 1, 1.0) : ImVec4(0.96, 0.83, 0.99, 1.0);
     if (highlighted)
-    {
-        _color = odd ? ImVec4(0.48, 0.58, 0.36, 1.0) : ImVec4(0.93, 0.93, 0.84, 1.0);
-        _color = Lerp(_color, ImVec4(0.75, 0.79, 0.30, 1.0), 0.75);
-    }
+        _color = Lerp(_color, ImVec4(0.21, 0.89, 0.60, 1.0), 0.30);
 }

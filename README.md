@@ -128,7 +128,7 @@ Students are encouraged to:
 This project is licensed under the MIT License.
 
 ## 👥 Contributors
-- [Xavier Austin] - Modifications made to Chess.cpp Chess.h and ChessSquare.cpp to allow for standard peice movement
+- [Xavier Austin] - Modifications made to Chess.cpp and Chess.h to allow for standard peice movement (including castling, enpassant, and pawn promotions) and added FEN support
 - [N/a] - Implementation and testing
 
 ## 🙏 Acknowledgments

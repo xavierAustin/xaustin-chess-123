@@ -18,8 +18,8 @@ namespace ClassGame {
         {
             game = new Chess();
             game->setUpBoard();
-            //for debugging and assignment; pretty slow; remove/rework
-            game->generateMoveList();
+            game->setAIPlayer(1);
+            game->updateAI();
         }
 
         //
@@ -38,7 +38,13 @@ namespace ClassGame {
 
                 if (gameOver) {
                     ImGui::Text("Game Over!");
-                    ImGui::Text("Winner: %d", gameWinner);
+                    if (gameWinner == -1)
+                        ImGui::Text("Draw.");
+                    else if (gameWinner)
+                        ImGui::Text("Black wins.");
+                    else
+                        ImGui::Text("White wins.");
+                    
                     if (ImGui::Button("Reset Game")) {
                         game->stopGame();
                         game->setUpBoard();
@@ -59,17 +65,15 @@ namespace ClassGame {
         //
         void EndOfTurn() 
         {
-            Player *winner = game->checkForWinner();
-            if (winner)
-            {
+            // dont remove it pisses off the cpp gods
+            Player*winner = game->checkForWinner();
+            if (winner){
                 gameOver = true;
                 gameWinner = winner->playerNumber();
-            }
-            if (game->checkForDraw()) {
+            }else if (game->checkForDraw()) {
                 gameOver = true;
                 gameWinner = -1;
-            }
-            //for debugging and assignment; pretty slow; remove/rework
-            game->generateMoveList();
+            }else
+                game->updateAI();
         }
 }

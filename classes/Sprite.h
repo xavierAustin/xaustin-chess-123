@@ -72,8 +72,8 @@ public:
         if (_size.x > 0.0f && _size.y > 0.0f)
         {
             ImGui::SetCursorPos(_location);
-            ImVec4 highlight = _highlighted ? ImVec4(1, 1, 0, 1) : ImVec4(0, 0, 0, 0);
-            ImGui::Image((void *)(intptr_t)_texture, _size, ImVec2(0, 0), ImVec2(1, 1), _color, highlight);
+            ImVec4 highlight = _highlighted ? ImVec4(0.21, 0.89, 0.60, 1.0) : _color;
+            ImGui::Image((void *)(intptr_t)_texture, _size, ImVec2(0, 0), ImVec2(1, 1), highlight, ImVec4(0, 0, 0, 0));
         }
 #endif
     }
