@@ -4,7 +4,7 @@
 
 #include <list>
 
-#define MAX_DEPTH 1
+#define MAX_DEPTH 3
 
 const int pieceSize = 64;
 
@@ -57,7 +57,7 @@ public:
 
 	void        updateAI() override;
     //change this for debug :)
-    bool        gameHasAI() override { return false; }
+    bool        gameHasAI() override { return true; }
     void        QuickPlacePeice(int x, int y, ChessPiece type, bool color);
     bool        bitFromToHelper(int sX, int sY, int type, BitHolder& dst);
     MoveList    generateMoveList(int c);

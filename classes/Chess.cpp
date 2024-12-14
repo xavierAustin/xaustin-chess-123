@@ -59,8 +59,8 @@ void Chess::setUpBoard()
     //FENtoPos("8/3R4/8/8/3Q4/8/1B6/8 w KQkq - 0 1");
     //FENtoPos("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
     //FENtoPos("2rq1rk1/1ppb1pp1/p1n4p/2bN1B2/P7/3Q2B1/1PP2PPP/R4RK1 w - - 0 1");
-    FENtoPos("r3r3/ppB3pp/8/2Q4k/1P5n/8/P1P1q1PP/R5K1 b - - 0 25");
-    //FENtoPos("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    //FENtoPos("r3r3/ppB3pp/8/2Q4k/1P5n/8/P1P1q1PP/R5K1 b - - 0 25");
+    FENtoPos("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     return;
 }
 
@@ -561,7 +561,7 @@ int32_t Chess::evaluateBoard(){
             //reduces the value of currently contested peices
             int attackerType = getPosAttacked(x,y,sign == 1) & 127;
             if (attackerType && type != NoPiece)
-                out -= sign * ((_value[type] - _value[attackerType])/3);
+                out -= sign * _value[type] / 2; //out -= sign * ((_value[type] - _value[attackerType])/3);
             int yForInd = (sign == -1) ? (7-y) : y;
             if (type == Pawn)
                 out += sign * _pTable[yForInd][x];
